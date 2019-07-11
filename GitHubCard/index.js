@@ -44,7 +44,17 @@ axios.get("https://api.github.com/users/dorabelme")
           user, and adding that card to the DOM.
 */
 
-const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+const followersArray = [
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell",
+  "prophen",
+  "Blevs",
+  "lilyhoratio",
+  "nisaChampagne",
+];
 
 followersArray.forEach(follower => {
   axios.get(`https://api.github.com/users/${follower}`)
@@ -94,12 +104,14 @@ function createCard(userObj) {
   const followers = document.createElement('p');
   const following = document.createElement('p');
   const bio = document.createElement('p')
+  const chart = document.createElement('img');
 
   // set the styles
   card.classList.add('card');
   cardInfo.classList.add('card-info');
   name.classList.add('name');
   userName.classList.add('username');
+ 
   
 
   // set the content
@@ -111,11 +123,21 @@ function createCard(userObj) {
   followers.textContent = `Followers: ${userObj.followers}`;
   following.textContent = `Following: ${userObj.following}`;
   bio.textContent = `Bio: ${userObj.bio}`;
+  chart.src = `http://ghchart.rshah.org/409ba5/${userObj.login}`;
+  chart.alt = "Dora Belme's Github Chart"
 
 
   // put together structure
-  card.appendChild(img, cardInfo);
-  cardInfo.appendChild(name, userName, location, profile, followers, following, bio);
+  card.appendChild(img);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  cardInfo.appendChild(chart);
   profile.appendChild(address);
 
   return card;
