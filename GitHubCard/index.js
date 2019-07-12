@@ -47,7 +47,7 @@ followingArray.forEach(following => {
       console.log("response", data);
       const userObj = data.data;
       const element = createCard(userObj);
-      mainCard.appendChild(element);
+      mainCard.append(element);
     })
     .catch(error => {
       // Handles failure:
@@ -73,7 +73,7 @@ axios.get("https://api.github.com/users/dorabelme/followers")
           console.log("response", data);
           const userObj = data.data;
           const element = createCard(userObj);
-          mainCard.appendChild(element);
+          mainCard.append(element);
         })
         .catch(error => {
           // Handles failure:
@@ -112,27 +112,21 @@ function createCard(userObj) {
   // set the content
   img.src = userObj.avatar_url;
   name.textContent = userObj.name;
+  userName.textContent = userObj.login;
   location.textContent = `Location: ${userObj.location}`;
   address.href = `${userObj.html_url}`;
   address.textContent = `${userObj.html_url}`;
+  profile.textContent = "Profile: ";
   followers.textContent = `Followers: ${userObj.followers}`;
   following.textContent = `Following: ${userObj.following}`;
-  bio.textContent = `Bio: ${userObj.bio}`;
+  bio.textContent = `Bio: ${userObj.bio || 'N/A'}`;
   chart.src = `http://ghchart.rshah.org/409ba5/${userObj.login}`;
-  chart.alt = "Dora Belme's Github Chart"
+  chart.alt = `${userObj.login} Github Chart`;
 
   // put together structure
-  card.appendChild(img);
-  card.appendChild(cardInfo);
-  cardInfo.appendChild(name);
-  cardInfo.appendChild(userName);
-  cardInfo.appendChild(location);
-  cardInfo.appendChild(profile);
-  cardInfo.appendChild(followers);
-  cardInfo.appendChild(following);
-  cardInfo.appendChild(bio);
-  cardInfo.appendChild(chart);
-  profile.appendChild(address);
+  card.append(img, cardInfo);
+  cardInfo.append(name, userName, location, profile, followers, following, bio, chart);
+  profile.append(address);
 
   return card;
 };
