@@ -1,6 +1,140 @@
+
+// Selecting HTML element
+const mainCard = document.querySelector(".cards");
+
+//getting my own Github data
+axios.get("https://api.github.com/users/dorabelme")
+  .then(data => {
+    // Handles success: here is where we get the results from server
+    console.log("response", data)
+    // Getting my specific data
+    const userObj = data.data
+    // Creating a card for myself
+    const element = createCard(userObj);
+    // Adding card to HTML main div
+    mainCard.appendChild(element);
+  })
+  .catch(error => {
+    // Handles failure
+    console.log("The Github API is currently down, try again later", error)
+  });
+
+/* List of LS Instructors Github username's: 
+  tetondan
+  dustinmyers
+  justsml
+  luishrd
+  bigknell
+*/
+
+// List of people I follow
+const followingArray = [
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell",
+  "prophen",
+  "Blevs",
+  "lilyhoratio",
+];
+
+// Getting profile of people I follow
+followingArray.forEach(following => {
+  axios.get(`https://api.github.com/users/${following}`)
+    .then(data => {
+      // Handles Success:
+      console.log("response", data);
+      const userObj = data.data;
+      const element = createCard(userObj);
+      mainCard.append(element);
+    })
+    .catch(error => {
+      // Handles failure:
+      console.log("The dogs API is currently down, try again later", error);
+    });
+})
+
+
+// Programmatically requesting the followers data from the API and creating a card
+var followers = [];
+axios.get("https://api.github.com/users/dorabelme/followers")
+  .then(data => {
+    console.log("response", data);
+    // Adding people following me to list
+    followers = data.data.map(item => item.login);
+    followers.forEach(follower => {
+      console.log(followers)
+      // Chaining the profile of followers
+      axios
+        .get(`https://api.github.com/users/${follower}`)
+        .then(data => {
+          // Handles Success: here's where we get the results from server
+          console.log("response", data);
+          const userObj = data.data;
+          const element = createCard(userObj);
+          mainCard.append(element);
+        })
+        .catch(error => {
+          // Handles failure:
+          console.log("The dogs API is currently down, try again later", error);
+        });
+    });
+  })
+  .catch(error => {
+      // Handles failure:
+    console.log("The dogs API is currently down, try again later", error);
+    
+});
+
+
+function createCard(userObj) {
+  // create the elements
+  const card = document.createElement('div');
+  const img = document.createElement("img");
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3')
+  const userName = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const address = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p')
+  const chart = document.createElement('img');
+
+  // set the styles
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  userName.classList.add('username');
+ 
+  // set the content
+  img.src = userObj.avatar_url;
+  name.textContent = userObj.name;
+  userName.textContent = userObj.login;
+  location.textContent = `Location: ${userObj.location}`;
+  address.href = `${userObj.html_url}`;
+  address.textContent = `${userObj.html_url}`;
+  profile.textContent = "Profile: ";
+  followers.textContent = `Followers: ${userObj.followers}`;
+  following.textContent = `Following: ${userObj.following}`;
+  bio.textContent = `Bio: ${userObj.bio || 'N/A'}`;
+  chart.src = `http://ghchart.rshah.org/409ba5/${userObj.login}`;
+  chart.alt = `${userObj.login} Github Chart`;
+
+  // put together structure
+  card.append(img, cardInfo);
+  cardInfo.append(name, userName, location, profile, followers, following, bio, chart);
+  profile.append(address);
+
+  return card;
+};
+
+
 /* Step 1: using axios, send a GET request to the following URL 
-           (replacing the palceholder with your Github name):
-           https://api.github.com/users/<your name>
+  (replacing the palceholder with your Github name):
+  https://api.github.com/users/<your name>
 */
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
@@ -13,6 +147,10 @@
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
+// the main DOM node to attach our dynamic content to
+// const mainCard = document.querySelector('.cards')
+
+
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
@@ -23,8 +161,6 @@
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
-
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -44,12 +180,4 @@ const followersArray = [];
   </div>
 </div>
 
-*/
-
-/* List of LS Instructors Github username's: 
-  tetondan
-  dustinmyers
-  justsml
-  luishrd
-  bigknell
 */
